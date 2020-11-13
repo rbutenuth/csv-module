@@ -15,7 +15,6 @@ import java.util.Optional;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.extension.api.annotation.error.Throws;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Config;
@@ -65,7 +64,7 @@ public class CsvOperations {
 							Map<String, Object> map = new LinkedHashMap<>();
 							CSVRecord record = records.next();
 							for (Column column : columns) {
-								map.put(column.getColumnName(), record.get(column.getColumnName()));
+								map.put(column.getColumnName(), column.parse(record.get(column.getColumnName())));
 							}
 							result.add(map);
 						} else {

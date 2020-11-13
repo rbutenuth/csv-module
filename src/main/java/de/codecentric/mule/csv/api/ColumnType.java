@@ -19,7 +19,7 @@ public enum ColumnType {
 			if (emptyToNull) {
 				return text.isEmpty() ? null : Long.valueOf(text);
 			} else {
-				return Long.valueOf(text);
+				return text.isEmpty() ? Long.valueOf(0) : Long.valueOf(text);
 			}
 		}
 	},
@@ -29,7 +29,7 @@ public enum ColumnType {
 			if (emptyToNull) {
 				return text.isEmpty() ? null : new BigDecimal(text);
 			} else {
-				return new BigDecimal(text);
+				return text.isEmpty() ? BigDecimal.ZERO : new BigDecimal(text);
 			}
 		}
 	};

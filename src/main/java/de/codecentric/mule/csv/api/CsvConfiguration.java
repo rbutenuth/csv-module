@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
+import org.apache.commons.lang3.StringUtils;
 import org.mule.runtime.api.meta.ExpressionSupport;
 import org.mule.runtime.extension.api.annotation.Expression;
 import org.mule.runtime.extension.api.annotation.Operations;
@@ -124,9 +125,24 @@ public class CsvConfiguration {
 	}
 	
 	public CSVFormat buildCsvFormat() {
-		return CSVFormat.newFormat(unescapeFirst(delimiter)).withQuote(unescapeFirst(quoteChar)).withQuoteMode(quoteMode).withCommentMarker(unescapeFirst(commentStart))
-				.withEscape(unescapeFirst(escape)).withIgnoreSurroundingSpaces(ignoreSurroundingSpaces).withIgnoreEmptyLines(ignoreEmptyLines)
+		CSVFormat format = CSVFormat.newFormat(unescapeFirst(delimiter)).withQuoteMode(quoteMode)
+				.withIgnoreSurroundingSpaces(ignoreSurroundingSpaces).withIgnoreEmptyLines(ignoreEmptyLines)
 				.withRecordSeparator(unescapeJava(recordSeparator)).withTrim(trim).withTrailingDelimiter(trailingDelimiter);
+		if (StringUtils.isNotEmpty(quoteChar)) {
+			format = format.withQuote(unescapeFirst(quoteChar));
+		}
+		if (StringUtils.isNotEmpty(escape)) {
+			format = format.withEscape(unescapeFirst(escape));
+		}
+		if (StringUtils.isNotEmpty(commentStart)) {
+			format = format.withCommentMarker(unescapeFirst(commentStart));
+		}
+		String[] headers = new String[columns.size()];
+		for (int i = 0; i < columns.size(); i++) {
+			headers[i] = columns.get(i).getColumnName();
+		}
+		format = format.withHeader(headers);
+		return format;
 	}
 	
 	private Character unescapeFirst(String s) {
