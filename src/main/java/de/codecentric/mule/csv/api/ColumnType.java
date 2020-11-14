@@ -2,8 +2,16 @@ package de.codecentric.mule.csv.api;
 
 import java.math.BigDecimal;
 
+import org.mule.metadata.api.builder.BaseTypeBuilder;
+import org.mule.metadata.api.model.MetadataType;
+
 public enum ColumnType {
 	TEXT {
+		@Override
+		protected MetadataType createMetadata(BaseTypeBuilder typeBuilder) {
+			return typeBuilder.stringType().build();
+		}
+
 		@Override
 		public Object parse(String text, boolean emptyToNull) {
 			if (emptyToNull) {
@@ -15,6 +23,11 @@ public enum ColumnType {
 	},
 	INTEGER {
 		@Override
+		protected MetadataType createMetadata(BaseTypeBuilder typeBuilder) {
+			return typeBuilder.numberType().build();
+		}
+
+		@Override
 		public Object parse(String text, boolean emptyToNull) {
 			if (emptyToNull) {
 				return text.isEmpty() ? null : Long.valueOf(text);
@@ -25,6 +38,11 @@ public enum ColumnType {
 	},
 	NUMBER {
 		@Override
+		protected MetadataType createMetadata(BaseTypeBuilder typeBuilder) {
+			return typeBuilder.numberType().build();
+		}
+
+		@Override
 		public Object parse(String text, boolean emptyToNull) {
 			if (emptyToNull) {
 				return text.isEmpty() ? null : new BigDecimal(text);
@@ -33,6 +51,8 @@ public enum ColumnType {
 			}
 		}
 	};
+
+	protected abstract MetadataType createMetadata(BaseTypeBuilder typeBuilder);
 
 	public abstract Object parse(String text, boolean emptyToNull);
 }

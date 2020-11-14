@@ -35,12 +35,7 @@ public class CsvOperations {
 		flowListener.onComplete(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					input.close();
-					// parser.close() ?
-				} catch (IOException e) {
-					// ignore
-				}
+				close(input);
 			}
 		});
 

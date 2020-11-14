@@ -35,19 +35,7 @@ public class ObjectMetadataResolver implements OutputTypeResolver<Object> {
 				ObjectFieldTypeBuilder columnBuilder = record.addField();
 				columnBuilder.key(column.getColumnName());
 				columnBuilder.required(true);
-				MetadataType columnMetadataType;
-				switch (column.getType()) {
-				case INTEGER:
-				case NUMBER:
-					columnMetadataType = typeBuilder.numberType().build();
-					break;
-				case TEXT:
-					columnMetadataType = typeBuilder.stringType().build();
-					break;
-				default:
-					throw new IllegalArgumentException("unknown type: " + column.getType());
-				}
-				columnBuilder.value(columnMetadataType);
+				columnBuilder.value(column.getType().createMetadata(typeBuilder));
 			}
 		}
 

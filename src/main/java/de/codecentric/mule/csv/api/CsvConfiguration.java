@@ -113,6 +113,21 @@ public class CsvConfiguration {
 	@Summary("Columns in the same order as in the file")
 	private List<Column> columns = new ArrayList<>();
 
+	public CsvConfiguration() {
+		delimiter = ";";
+		quoteChar = "\"";
+		escape = "\"";
+		quoteMode = QuoteMode.MINIMAL;
+		recordSeparator = "\\r\\n";
+		commentStart = null;
+		ignoreSurroundingSpaces = false;
+		ignoreEmptyLines = false;
+		trim = false;
+		trailingDelimiter = false;
+		charset = "UTF-8";
+		withHeaderLine = true;
+	}
+	
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -145,8 +160,7 @@ public class CsvConfiguration {
 		return format;
 	}
 	
-	private Character unescapeFirst(String s) {
-		String unquoted = unescapeJava(s);
-		return unquoted.length() > 0 ? unquoted.charAt(0) : '?'; 
+	public Character unescapeFirst(String s) {
+		return unescapeJava(s).charAt(0);
 	}
 }
