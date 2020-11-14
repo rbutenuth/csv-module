@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.mule.metadata.api.builder.BaseTypeBuilder;
 import org.mule.metadata.api.model.MetadataType;
+import org.mule.runtime.extension.api.exception.ModuleException;
 
 public enum ColumnType {
 	TEXT {
@@ -29,10 +30,14 @@ public enum ColumnType {
 
 		@Override
 		public Object parse(String text, boolean emptyToNull) {
-			if (emptyToNull) {
-				return text.isEmpty() ? null : Long.valueOf(text);
-			} else {
-				return text.isEmpty() ? Long.valueOf(0) : Long.valueOf(text);
+			try {
+				if (emptyToNull) {
+					return text.isEmpty() ? null : Long.valueOf(text);
+				} else {
+					return text.isEmpty() ? Long.valueOf(0) : Long.valueOf(text);
+				}
+			} catch (NumberFormatException e) {
+				throw new ModuleException("Unparsable long: \"" + text + "\"", CsvError.NUMBER_FORMAT, e);
 			}
 		}
 	},
@@ -44,10 +49,14 @@ public enum ColumnType {
 
 		@Override
 		public Object parse(String text, boolean emptyToNull) {
-			if (emptyToNull) {
-				return text.isEmpty() ? null : new BigDecimal(text);
-			} else {
-				return text.isEmpty() ? BigDecimal.ZERO : new BigDecimal(text);
+			try {
+				if (emptyToNull) {
+					return text.isEmpty() ? null : new BigDecimal(text);
+				} else {
+					return text.isEmpty() ? BigDecimal.ZERO : new BigDecimal(text);
+				}
+			} catch (NumberFormatException e) {
+				throw new ModuleException("Unparsable BigInteger: \"" + text + "\"", CsvError.NUMBER_FORMAT, e);
 			}
 		}
 	};
