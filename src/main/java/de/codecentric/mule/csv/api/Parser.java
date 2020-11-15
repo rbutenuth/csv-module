@@ -23,12 +23,11 @@ import org.mule.runtime.extension.api.runtime.operation.FlowListener;
 import org.mule.runtime.extension.api.runtime.streaming.PagingProvider;
 
 /**
- * This class is a container for operations, every public method in this class
- * will be taken as an extension operation.
+ * Implementation of operation "parse".
  */
-public class CsvOperations {
+public class Parser {
 
-	@OutputResolver(output = ObjectMetadataResolver.class)
+	@OutputResolver(output = OutputObjectMetadataResolver.class)
 	@Throws(value = OperationErrorTypeProvider.class)
 	public PagingProvider<CsvConnection, Map<String, Object>> parse(InputStream input, FlowListener flowListener,
 			@Config CsvConfiguration config) {
@@ -63,7 +62,7 @@ public class CsvOperations {
 							}
 							result.add(map);
 						} else {
-							CsvOperations.this.close(parser);
+							Parser.this.close(parser);
 							break;
 						}
 					}
@@ -77,7 +76,7 @@ public class CsvOperations {
 				
 				@Override
 				public void close(CsvConnection connection) {
-					CsvOperations.this.close(parser);
+					Parser.this.close(parser);
 				}
 			};
 		} catch (IOException e) {

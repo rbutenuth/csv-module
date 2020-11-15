@@ -21,7 +21,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Summary;
  * Description of a CSV table. Used to control the parser and the metadata
  * generation. See {@link CSVFormat} for the meaning of the parameters.
  */
-@Operations(CsvOperations.class)
+@Operations({ Parser.class, Generator.class })
 public class CsvConfiguration {
 
 	@Parameter

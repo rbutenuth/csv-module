@@ -64,4 +64,12 @@ public enum ColumnType {
 	protected abstract MetadataType createMetadata(BaseTypeBuilder typeBuilder);
 
 	public abstract Object parse(String text, boolean emptyToNull);
+	
+	public String generate(Object value) {
+		if (value == null) {
+			return "";
+		} else {
+			return value.toString();
+		}
+	}
 }

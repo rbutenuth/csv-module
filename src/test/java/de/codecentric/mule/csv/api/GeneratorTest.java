@@ -2,6 +2,7 @@ package de.codecentric.mule.csv.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -11,7 +12,7 @@ import org.junit.Test;
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.core.api.streaming.iterator.ConsumerStreamingIterator;
 
-public class ParseTest extends MuleArtifactFunctionalTestCase {
+public class GeneratorTest extends MuleArtifactFunctionalTestCase {
 
 	@Override
 	protected String getConfigFile() {
@@ -19,15 +20,13 @@ public class ParseTest extends MuleArtifactFunctionalTestCase {
 	}
 
 	@Test
-	public void executeCsvToJava() throws Exception {
+	public void executeJavaToCsv() throws Exception {
 		InputStream payload = createCsv();
 		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
 		
-		System.out.println("------------------" + result.getClass());
-//		assertEquals(1, result.getSize());
+		assertEquals(-1, result.getSize());
 		assertTrue(result.hasNext());
-		System.out.println("------------------next=" + result.next());
 		
 	}
 

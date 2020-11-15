@@ -12,14 +12,14 @@ import org.mule.runtime.extension.api.exception.ModuleException;
 public class ColumnTypeTest {
 
 	@Test
-	public void text() {
+	public void parseText() {
 		assertEquals(ColumnType.TEXT.parse("foo", true), "foo");
 		assertNull(ColumnType.TEXT.parse("", true));
 		assertEquals(ColumnType.TEXT.parse("", false), "");
 	}
 	
 	@Test
-	public void integralNumber() {
+	public void parseLong() {
 		assertEquals(ColumnType.INTEGER.parse("42", true), Long.valueOf(42));
 		assertEquals(ColumnType.INTEGER.parse("42", false), Long.valueOf(42));
 		assertNull(ColumnType.INTEGER.parse("", true));
@@ -33,7 +33,7 @@ public class ColumnTypeTest {
 	}
 	
 	@Test
-	public void bigDecimal() {
+	public void parseBigDecimal() {
 		assertEquals(ColumnType.NUMBER.parse("3.14", true), BigDecimal.valueOf(314, 2));
 		assertEquals(ColumnType.NUMBER.parse("3.14", false), BigDecimal.valueOf(314, 2));
 		assertNull(ColumnType.NUMBER.parse("", true));
@@ -44,5 +44,11 @@ public class ColumnTypeTest {
 		} catch (ModuleException e) {
 			assertEquals("Unparsable BigInteger: \"4x2\"", e.getMessage());
 		}
+	}
+	
+	@Test
+	public void generate() {
+		assertEquals(ColumnType.TEXT.generate("foo"), "foo");
+		assertEquals(ColumnType.TEXT.generate(null), "");
 	}
 }

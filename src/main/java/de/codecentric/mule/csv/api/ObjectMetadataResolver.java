@@ -9,22 +9,13 @@ import org.mule.metadata.api.model.MetadataType;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.metadata.MetadataContext;
 import org.mule.runtime.api.metadata.MetadataResolvingException;
-import org.mule.runtime.api.metadata.resolving.OutputTypeResolver;
 
-public class ObjectMetadataResolver implements OutputTypeResolver<Object> {
+public class ObjectMetadataResolver {
 
 	
-	// TODO Kann gleichzeitig InptTypeResolver implementieren
 	// TODO https://docs.mulesoft.com/mule-sdk/1.1/static-metadata für den statischen Teil (MimeType csv)
 	
-	@Override
-	public String getCategoryName() {
-		return "CsvCategory";
-	}
-
-	@Override
-	public MetadataType getOutputType(MetadataContext context, Object unusedKey)
-			throws MetadataResolvingException, ConnectionException {
+	protected MetadataType getType(MetadataContext context, Object unusedKey)	throws MetadataResolvingException, ConnectionException {
 		BaseTypeBuilder typeBuilder = context.getTypeBuilder();
 		ObjectTypeBuilder record = typeBuilder.objectType();
 
