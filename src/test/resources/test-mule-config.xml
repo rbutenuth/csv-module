@@ -22,4 +22,11 @@
  		<set-payload value="#[payload[0]]" />
  -->
 	</flow>
+
+
+	<flow name="java-to-csv">
+		<csv:generate config-ref="Csv_Config" rows="#[payload]">
+			<non-repeatable-stream />
+		</csv:generate>
+	</flow>
 </mule>

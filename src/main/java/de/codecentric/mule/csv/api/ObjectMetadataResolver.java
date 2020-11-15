@@ -12,9 +12,6 @@ import org.mule.runtime.api.metadata.MetadataResolvingException;
 
 public class ObjectMetadataResolver {
 
-	
-	// TODO https://docs.mulesoft.com/mule-sdk/1.1/static-metadata für den statischen Teil (MimeType csv)
-	
 	protected MetadataType getType(MetadataContext context, Object unusedKey)	throws MetadataResolvingException, ConnectionException {
 		BaseTypeBuilder typeBuilder = context.getTypeBuilder();
 		ObjectTypeBuilder record = typeBuilder.objectType();

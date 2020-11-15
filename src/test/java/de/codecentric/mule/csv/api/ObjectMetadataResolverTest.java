@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mule.runtime.api.component.location.Location.builder;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.mule.metadata.api.model.ObjectType;
 import org.mule.metadata.api.model.StringType;
 import org.mule.runtime.api.component.location.Location;
 import org.mule.runtime.api.meta.model.operation.OperationModel;
+import org.mule.runtime.api.meta.model.parameter.ParameterModel;
 import org.mule.runtime.api.metadata.MetadataService;
 import org.mule.runtime.api.metadata.descriptor.ComponentMetadataDescriptor;
 import org.mule.runtime.api.metadata.resolving.MetadataResult;
@@ -35,7 +38,22 @@ public class ObjectMetadataResolverTest extends MuleArtifactFunctionalTestCase {
 		OperationModel model = metadata.get().getModel();
 		assertEquals("parse", model.getName());
 	    ArrayType output = (ArrayType) model.getOutput().getType();
-	    ObjectType record = (ObjectType) output.getType();
+	    checkType(output);
+	}
+
+	@Test
+	public void getInputTypeForSimpleCsv() {
+		MetadataResult<ComponentMetadataDescriptor<OperationModel>> metadata = getMetadata("java-to-csv");
+		assertTrue(metadata.isSuccess());
+		OperationModel model = metadata.get().getModel();
+		assertEquals("generate", model.getName());
+		List<ParameterModel> parameterModels = model.getAllParameterModels();
+		ArrayType input = (ArrayType) parameterModels.get(0).getType();
+		checkType(input);
+	}
+
+	private void checkType(ArrayType array) {
+		ObjectType record = (ObjectType) array.getType();
 	    assertEquals(3, record.getFields().size());
 	    assertTrue(record.getFieldByName("name").get().getValue() instanceof StringType);
 	    assertTrue(record.getFieldByName("age").get().getValue() instanceof NumberType);
