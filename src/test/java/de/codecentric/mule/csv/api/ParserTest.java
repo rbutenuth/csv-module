@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 import org.mule.runtime.core.api.streaming.iterator.ConsumerStreamingIterator;
 
 public class ParserTest extends MuleArtifactFunctionalTestCase {
+
+	private static final int ROWS = 400;
 
 	@Override
 	protected String getConfigFile() {
@@ -27,6 +30,40 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 	public void executeCsvToJava() throws Exception {
 		InputStream payload = createCsvWithHeader();
 		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java") //
+				.withPayload(payload).run().getMessage().getPayload().getValue();
+
+		checkResult(result);
+	}
+
+	@Test
+	public void executeCsvToJavaWithManyRows() throws Exception {
+		StringBuilder builder = new StringBuilder();
+		builder.append("name|age|weight\r\n");
+		for (int i = 0; i < ROWS; i++) {
+			builder.append("name-").append(i).append('|');
+			builder.append(1000 + i).append('|');
+			builder.append(2000 + i).append('|');
+			builder.append("\r\n");
+		}
+		InputStream payload = createCsv(builder.toString());
+		@SuppressWarnings("unchecked")
+		Iterator<Map<String, Object>> result = (Iterator<Map<String, Object>>) flowRunner("csv-to-java") //
+				.withPayload(payload).run().getMessage().getPayload().getValue();
+		int count = 0;
+		while (result.hasNext()) {
+			Map<String, Object> row = result.next();
+			assertEquals("name-" + count, row.get("name"));
+			assertEquals(Long.valueOf(1000 + count), row.get("age"));
+			assertEquals(new BigDecimal(2000 + count), row.get("weight"));
+			count++;
+		}
+		assertEquals(ROWS, count);
+	}
+	
+	@Test
+	public void executeCsvToJavaNoHeader() throws Exception {
+		InputStream payload = createCsv("Max Mule|12|79.8\r\n");
+		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java-no-header") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
 
 		checkResult(result);
@@ -109,6 +146,8 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 		}
 	}
 
+	
+	
 	private InputStream createCsvWithHeader() {
 		String content = "name|age|weight\r\n" + "Max Mule|12|79.8\r\n";
 		return createCsv(content);
