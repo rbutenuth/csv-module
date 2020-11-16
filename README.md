@@ -12,7 +12,7 @@ Add this dependency to your application pom.xml (check for newer version):
 
 ```
 <dependency>
-	<groupId>de.codecentric.mule</groupId>
+	<groupId>de.codecentric.mule.modules</groupId>
 	<artifactId>csv-module</artifactId>
 	<version>0.1.0</version>
 	<classifier>mule-plugin</classifier>
