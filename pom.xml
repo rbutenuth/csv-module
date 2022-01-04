@@ -151,6 +151,8 @@
 					<useReleaseProfile>false</useReleaseProfile>
 					<releaseProfiles>release</releaseProfiles>
 					<goals>deploy</goals>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
 			<plugin>
