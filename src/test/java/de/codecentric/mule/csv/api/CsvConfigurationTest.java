@@ -15,7 +15,7 @@ public class CsvConfigurationTest {
 	public void defaultConfiguration() {
 		CsvConfiguration config = new CsvConfiguration();
 		CSVFormat format = config.buildCsvFormat();
-		assertEquals(';', format.getDelimiter());
+		assertEquals(";", format.getDelimiterString());
 		assertEquals(new Character('"'), format.getQuoteCharacter());
 		assertEquals(new Character('"'), format.getEscapeCharacter());
 		assertEquals(QuoteMode.MINIMAL, format.getQuoteMode());

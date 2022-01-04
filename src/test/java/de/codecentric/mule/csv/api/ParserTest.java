@@ -41,7 +41,7 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 		builder.append("name|age|weight\r\n");
 		for (int i = 0; i < ROWS; i++) {
 			builder.append("name-").append(i).append('|');
-			builder.append(1000 + i).append('|');
+			builder.append('"').append(1000 + i).append('"').append('|');
 			builder.append(2000 + i).append('|');
 			builder.append("\r\n");
 		}

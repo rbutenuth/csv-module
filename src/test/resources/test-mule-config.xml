@@ -6,7 +6,7 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
           http://www.mulesoft.org/schema/mule/csv http://www.mulesoft.org/schema/mule/csv/current/mule-csv.xsd">
 
-	<csv:config name="Csv_Config" delimiter="|" recordSeparator="\n">
+	<csv:config name="Csv_Config" delimiter="|" recordSeparator="\n" quoteChar="&quot;" escape="">
 		<csv:columns >
 			<csv:column columnName="name" type="TEXT" />
 			<csv:column columnName="age" type="INTEGER" />
@@ -14,7 +14,7 @@
 		</csv:columns>
 	</csv:config>
 	
-	<csv:config name="Csv_Config_No_Header" delimiter="|" recordSeparator="\n" withHeaderLine="false" commentStart="#" quoteChar="" escape="" >
+	<csv:config name="Csv_Config_No_Header" delimiter="|" recordSeparator="\n" withHeaderLine="false" commentStart="#"  >
 		<csv:columns >
 			<csv:column columnName="name" type="TEXT" />
 			<csv:column columnName="age" type="INTEGER" />

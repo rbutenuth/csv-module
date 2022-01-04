@@ -39,7 +39,7 @@ public class CsvConfiguration {
 	private String quoteChar;
 
 	@Parameter
-	@Optional(defaultValue = "\"")
+	@Optional(defaultValue = "")
 	@Expression(ExpressionSupport.NOT_SUPPORTED)
 	@DisplayName("Escape Character")
 	@Summary("Needed when a column contains the quote character.")
