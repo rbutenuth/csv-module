@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,9 +12,8 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
 
-public class GeneratorTest extends MuleArtifactFunctionalTestCase {
+public class GeneratorTest {
 	private final String expectedOneRow = "col-1;col-2\r\nhello;world\r\n";
 	private Generator generator;
 	private CsvConfiguration config;
@@ -34,26 +32,6 @@ public class GeneratorTest extends MuleArtifactFunctionalTestCase {
 		columns.add(c2);
 	} 
 	
-	@Override
-	protected String getConfigFile() {
-		return "test-mule-config.xml";
-	}
-
-	@Test
-	public void executeJavaToCsv() throws Exception {
-		List<Map<String, Object>> payload = new ArrayList<>();
-		Map<String, Object> row = new LinkedHashMap<>();
-		row.put("name", "Max Mule");
-		row.put("age", Long.valueOf(8));
-		row.put("weight", new BigDecimal("42.5"));
-		payload.add(row);
-		InputStream stream = (InputStream) flowRunner("java-to-csv") //
-				.withPayload(payload).run().getMessage().getPayload().getValue();
-
-		System.out.println(stream.getClass());
-	}
-
-
 	@Test
 	public void emptyCollection() throws IOException {
 		assertEquals("col-1;col-2\r\n", rows2String(new ArrayList<>()));

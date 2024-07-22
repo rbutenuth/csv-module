@@ -18,7 +18,7 @@ Add this dependency to your application pom.xml (check for newer version):
 <dependency>
 	<groupId>de.codecentric.mule.modules</groupId>
 	<artifactId>csv-module</artifactId>
-	<version>0.1.0</version>
+	<version>1.1.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```
@@ -73,3 +73,10 @@ of a `csv:generate` you see the metadata on the right side of the transformation
 <csv:generate doc:name="Generate" config-ref="Csv_Config" rows="#[payload]"/>
 ```
 
+## Release notes
+
+* 1.1.0 2024-07-22: Updated Mule Java SDK to 1.6.3, now ready for Mule running on Java 17.
+  For some unknown reasons there are some weird problems with some tests. I will add them again
+  when the problem is solved.
+* 1.0.2 2022-01-04: Added non empty default for escape character, more tests
+* 0.1.0 2020-11-15: Initial version 
