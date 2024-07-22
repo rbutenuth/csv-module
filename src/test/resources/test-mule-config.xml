@@ -26,20 +26,20 @@
 		<csv:parse config-ref="Csv_Config" input="#[payload]">
 			<non-repeatable-iterable />
 		</csv:parse>
-<!--
- 		<set-payload value="#[payload[0]]" />
- -->
+ 		<set-payload value="#[payload map $]" />
 	</flow>
 
 	<flow name="csv-to-java-no-header">
 		<csv:parse config-ref="Csv_Config_No_Header" input="#[payload]">
 			<non-repeatable-iterable />
 		</csv:parse>
+		<set-payload value="#[payload map $]" />
 	</flow>
 
 	<flow name="java-to-csv">
 		<csv:generate config-ref="Csv_Config" rows="#[payload]">
 			<non-repeatable-stream />
 		</csv:generate>
+ 		<set-payload value="#[payload map $]" />
 	</flow>
 </mule>

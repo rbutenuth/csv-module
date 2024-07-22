@@ -1,8 +1,6 @@
 package de.codecentric.mule.csv.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -10,12 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.mule.functional.junit4.MuleArtifactFunctionalTestCase;
-import org.mule.runtime.core.api.streaming.iterator.ConsumerStreamingIterator;
 
 public class ParserTest extends MuleArtifactFunctionalTestCase {
 
@@ -29,7 +26,7 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 	@Test
 	public void executeCsvToJava() throws Exception {
 		InputStream payload = createCsvWithHeader();
-		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java") //
+		List<?> result = (List<?>) flowRunner("csv-to-java") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
 
 		checkResult(result);
@@ -47,23 +44,22 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 		}
 		InputStream payload = createCsv(builder.toString());
 		@SuppressWarnings("unchecked")
-		Iterator<Map<String, Object>> result = (Iterator<Map<String, Object>>) flowRunner("csv-to-java") //
+		List<Map<String, Object>> result = (List<Map<String, Object>>) flowRunner("csv-to-java") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
-		int count = 0;
-		while (result.hasNext()) {
-			Map<String, Object> row = result.next();
+		assertEquals(ROWS, result.size());
+		for (int count = 0; count < ROWS; count++) {
+			Map<String, Object> row = result.get(count);
 			assertEquals("name-" + count, row.get("name"));
 			assertEquals(Long.valueOf(1000 + count), row.get("age"));
 			assertEquals(new BigDecimal(2000 + count), row.get("weight"));
 			count++;
 		}
-		assertEquals(ROWS, count);
 	}
 	
 	@Test
 	public void executeCsvToJavaNoHeader() throws Exception {
 		InputStream payload = createCsv("Max Mule|12|79.8\r\n");
-		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java-no-header") //
+		List<?> result = (List<?>) flowRunner("csv-to-java-no-header") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
 
 		checkResult(result);
@@ -85,23 +81,12 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 			}
 		};
 				
-		ConsumerStreamingIterator<?> result = (ConsumerStreamingIterator<?>) flowRunner("csv-to-java") //
+		List<?> result = (List<?>) flowRunner("csv-to-java") //
 				.withPayload(payload).run().getMessage().getPayload().getValue();
 
 		checkResult(result);
 	}
-	private void checkResult(ConsumerStreamingIterator<?> result) {
-		assertEquals(-1, result.getSize());
-		assertTrue(result.hasNext());
-		@SuppressWarnings("unchecked")
-		Map<String, Object> row = (Map<String, Object>) result.next();
-		assertEquals(3, row.size());
-		assertEquals("Max Mule", row.get("name"));
-		assertEquals(Long.valueOf(12), row.get("age"));
-		assertEquals(new BigDecimal("79.8"), row.get("weight"));
-		assertFalse(result.hasNext());
-	}
-
+	
 	@Test
 	public void executeCsvToJavaMissingHeaderLine() throws Exception {
 		InputStream payload = createCsv("");
@@ -109,7 +94,7 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 			flowRunner("csv-to-java").withPayload(payload).run().getMessage().getPayload().getValue();
 			fail("Exception missing");
 		} catch (Exception e) {
-			assertEquals("Missing header line.", e.getMessage());
+			assertEquals("Missing header line", e.getMessage());
 		}
 	}
 
@@ -120,7 +105,7 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 			flowRunner("csv-to-java").withPayload(payload).run().getMessage().getPayload().getValue();
 			fail("Exception missing");
 		} catch (Exception e) {
-			assertEquals("Column 'name' excepted, but got 'Max Mule'.", e.getMessage());
+			assertEquals("Column 'name' excepted, but got 'Max Mule'", e.getMessage());
 		}
 	}
 
@@ -131,7 +116,7 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 			flowRunner("csv-to-java").withPayload(payload).run().getMessage().getPayload().getValue();
 			fail("Exception missing");
 		} catch (Exception e) {
-			assertEquals("Header should contain 3 columns, but contains 2.", e.getMessage());
+			assertEquals("Header should contain 3 columns, but contains 2", e.getMessage());
 		}
 	}
 
@@ -142,12 +127,20 @@ public class ParserTest extends MuleArtifactFunctionalTestCase {
 			flowRunner("csv-to-java").withPayload(payload).run().getMessage().getPayload().getValue();
 			fail("Exception missing");
 		} catch (Exception e) {
-			assertEquals("Column 'weight' excepted, but got 'length'.", e.getMessage());
+			assertEquals("Column 'weight' excepted, but got 'length'", e.getMessage());
 		}
 	}
 
-	
-	
+	private void checkResult(List<?> result) {
+		assertEquals(1, result.size());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> row = (Map<String, Object>) result.get(0);
+		assertEquals(3, row.size());
+		assertEquals("Max Mule", row.get("name"));
+		assertEquals(Long.valueOf(12), row.get("age"));
+		assertEquals(new BigDecimal("79.8"), row.get("weight"));
+	}
+
 	private InputStream createCsvWithHeader() {
 		String content = "name|age|weight\r\n" + "Max Mule|12|79.8\r\n";
 		return createCsv(content);
